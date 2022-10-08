@@ -31,6 +31,7 @@ const Admin = () => {
       formData.append(key, value)
     })
 
+    console.log(data.url, formData)
     toast.promise(
       fetch(data.url, {
         method: 'POST',
