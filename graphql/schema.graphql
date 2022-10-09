@@ -3,7 +3,7 @@
 
 
 type Mutation {
-  createPost(description: String!, imageUrl: String!, tags: [String]): Post!
+  createPost(description: String!, id: String!, imageUrl: String!, tags: [String]): Post!
 }
 
 """

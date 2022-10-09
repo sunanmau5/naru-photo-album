@@ -47,6 +47,7 @@ export const CreatePostMutation = extendType({
     t.nonNull.field('createPost', {
       type: Post,
       args: {
+        id: nonNull(stringArg()),
         imageUrl: nonNull(stringArg()),
         description: nonNull(stringArg()),
         tags: list(stringArg())
@@ -69,6 +70,7 @@ export const CreatePostMutation = extendType({
         }
 
         const newPost = {
+          id: args.id,
           imageUrl: args.imageUrl,
           description: args.description,
           tags: args.tags

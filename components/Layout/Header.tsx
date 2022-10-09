@@ -29,25 +29,23 @@ const Header = () => {
           {user && (
             //
             //
-            <>
-              <div className='flex itemx-center justify-center mr-5 capitalize bg-blue-500 py-1 px-3 rounded-md text-white'>
+            <div className='flex items-center space-x-5'>
+              <div className='flex itemx-center justify-center capitalize bg-blue-400 hover:bg-blue-500 py-1 px-3 rounded-md text-white transition-all'>
                 <Link href='/admin'>
                   <a>+ Create</a>
                 </Link>
               </div>
-              <div className='flex items-center space-x-5'>
-                <Link href='/api/auth/logout'>
-                  <a className='inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base'>
-                    Logout
-                  </a>
-                </Link>
-                <img
-                  alt='profile'
-                  className='rounded-full w-12 h-12'
-                  src={user.picture}
-                />
-              </div>
-            </>
+              <Link href='/api/auth/logout'>
+                <a className='inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded-md text-base transition-all'>
+                  Logout
+                </a>
+              </Link>
+              <img
+                alt='profile'
+                className='rounded-full w-10 h-10'
+                src={user.picture}
+              />
+            </div>
           )}
         </nav>
       </div>

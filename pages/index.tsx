@@ -9,11 +9,10 @@ function Home() {
         <title>Awesome Posts</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <div className='container mx-auto max-w-5xl my-20 px-5'>
-        <AuthGate>
-          <Posts />
-        </AuthGate>
-      </div>
+
+      <AuthGate>
+        <Posts />
+      </AuthGate>
     </div>
   )
 }

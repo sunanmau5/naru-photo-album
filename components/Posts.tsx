@@ -1,5 +1,4 @@
 import { gql, useQuery } from '@apollo/client'
-import { useUser } from '@auth0/nextjs-auth0'
 import Link from 'next/link'
 import { AwesomePost } from './AwesomePost'
 
@@ -24,8 +23,9 @@ const AllPostsQuery = gql`
 `
 
 export const Posts = () => {
+  // TODO sign images on fetch all
   const { data, loading, error, fetchMore } = useQuery(AllPostsQuery, {
-    variables: { first: 3 }
+    variables: { first: 6 }
   })
 
   if (loading) return <p>Loading...</p>
@@ -36,16 +36,19 @@ export const Posts = () => {
   return (
     <>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-        {data?.posts.edges.map(({ node }, i) => (
+        {data?.posts.edges.map(({ node }) => (
           //
           //
-          <Link href={`/post/${node.id}`} key={i}>
+          <Link href={`/post/${node.id}`} key={node.id}>
             <a>
               <AwesomePost
-                id={node.id}
-                description={node.description}
-                imageUrl={node.imageUrl}
-                tags={node.tags}
+                className='max-w-md'
+                post={{
+                  id: node.id,
+                  description: node.description,
+                  imageUrl: node.imageUrl,
+                  tags: node.tags
+                }}
               />
             </a>
           </Link>

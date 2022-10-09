@@ -1,12 +1,25 @@
 import { gql, useMutation } from '@apollo/client'
 import { getSession } from '@auth0/nextjs-auth0'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast, { Toaster } from 'react-hot-toast'
 import prisma from '../lib/prisma'
 
 const CreatePostMutation = gql`
-  mutation ($imageUrl: String!, $description: String!, $tags: [String]) {
-    createPost(imageUrl: $imageUrl, description: $description, tags: $tags) {
+  mutation (
+    $id: String!
+    $imageUrl: String!
+    $description: String!
+    $tags: [String]
+  ) {
+    createPost(
+      id: $id
+      imageUrl: $imageUrl
+      description: $description
+      tags: $tags
+    ) {
+      id
       imageUrl
       description
       tags
@@ -17,44 +30,49 @@ const CreatePostMutation = gql`
 const Admin = () => {
   const [createPost, { loading, error }] = useMutation(CreatePostMutation)
   const { register, handleSubmit } = useForm()
+  const [assignedId, setAssignedId] = useState<string | null>(null)
+  const { push } = useRouter()
 
-  // Upload photo function
-  const uploadPhoto = async (e) => {
+  const uploadImage = async (e) => {
     const file = e.target.files[0]
-    const filename = encodeURIComponent(file.name)
-    const res = await fetch(`/api/upload-image?file=${filename}`)
-    const data = await res.json()
+    const res = await fetch(`/api/upload-image?fileType=${file.type}`)
+    const { fields, url } = await res.json()
+
     const formData = new FormData()
 
-    Object.entries({ ...data.fields, file }).forEach(([key, value]) => {
+    Object.entries({ ...fields, file }).forEach(([key, value]) => {
       // @ts-ignore
       formData.append(key, value)
     })
 
-    console.log(data.url, formData)
     toast.promise(
-      fetch(data.url, {
+      fetch(url, {
         method: 'POST',
         body: formData
       }),
       {
         loading: 'Uploading...',
-        success: 'Image successfully uploaded!🎉',
+        success: () => {
+          setAssignedId(fields.key)
+          console.log('ID assigned')
+          return 'Image successfully uploaded!🎉'
+        },
         error: `Upload failed 😥 Please try again ${error}`
       }
     )
   }
 
   const onSubmit = async (data) => {
-    const { description, image, tags } = data
+    const { description, tags } = data
 
-    const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${image[0].name}`
+    const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${assignedId}`
     const tagsArr = tags
       .split(',')
       .map((tag) => tag.trim())
       .filter((tag) => tag !== '')
 
-    const variables = { description, imageUrl, tags: tagsArr }
+    const variables = { id: assignedId, description, imageUrl, tags: tagsArr }
+
     try {
       toast.promise(createPost({ variables }), {
         loading: 'Creating new post..',
@@ -63,6 +81,7 @@ const Admin = () => {
       })
     } catch (error) {
       console.error(error)
+    } finally {
     }
   }
 
@@ -100,7 +119,7 @@ const Admin = () => {
           </span>
           <input
             {...register('image', { required: true })}
-            onChange={uploadPhoto}
+            onChange={uploadImage}
             type='file'
             accept='image/png, image/jpeg'
             name='image'

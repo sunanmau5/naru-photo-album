@@ -1,15 +1,10 @@
 import aws from 'aws-sdk'
-import { randomUUID } from 'crypto'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { fileType } = req.query
-  const uuid = randomUUID()
-  const imageKey = `${uuid}.${(fileType as string).split('/')[1]}`
-
   try {
     const s3 = new aws.S3({
       accessKeyId: process.env.APP_AWS_ACCESS_KEY,
@@ -24,18 +19,22 @@ export default async function handler(
       signatureVersion: 'v4'
     })
 
-    const post = await s3.createPresignedPost({
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Fields: {
-        key: imageKey
-      },
-      Expires: 60, // seconds
-      Conditions: [
-        ['content-length-range', 0, 5048576] // up to 1 MB
-      ]
-    })
+    if (req.query.imageKey) {
+      const signedUrlExpireSeconds = 60 * 1
 
-    return res.status(200).json(post)
+      const url = await s3.getSignedUrl('getObject', {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: req.query.imageKey,
+        Expires: signedUrlExpireSeconds
+      })
+
+      return res.status(200).json(url)
+    } else {
+      const results = await s3.listObjects({
+        Bucket: process.env.AWS_S3_BUCKET_NAME
+      })
+      console.log({ results })
+    }
   } catch (error) {
     console.log(error)
   }
