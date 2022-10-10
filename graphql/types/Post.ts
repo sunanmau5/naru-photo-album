@@ -93,3 +93,44 @@ export const CreatePostMutation = extendType({
     })
   }
 })
+
+export const UpdatePostMutation = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.nonNull.field('updatePost', {
+      type: Post,
+      args: {
+        id: nonNull(stringArg()),
+        description: stringArg(),
+        tags: list(stringArg())
+      },
+      async resolve(_parent, args, ctx) {
+        //
+        //
+        if (!ctx.user) {
+          throw new Error(`You need to be logged in to perform an action`)
+        }
+
+        const user = await ctx.prisma.user.findUnique({
+          where: {
+            email: ctx.user.email
+          }
+        })
+
+        if (user.role !== 'ADMIN') {
+          throw new Error(`You do not have permission to perform action`)
+        }
+
+        return await ctx.prisma.post.update({
+          where: {
+            id: args.id
+          },
+          data: {
+            description: args.description,
+            tags: args.tags
+          }
+        })
+      }
+    })
+  }
+})

@@ -28,7 +28,7 @@ const CreatePostMutation = gql`
 
 const Admin = () => {
   const [createPost, { loading, error }] = useMutation(CreatePostMutation)
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit }= useForm()
   const [assignedId, setAssignedId] = useState<string | null>(null)
   const [imageKey, setImageKey] = useState<string | null>(null)
 
@@ -110,7 +110,7 @@ const Admin = () => {
           <span className='text-gray-700'>Tags</span>
           <input
             placeholder='Tags'
-            {...register('tags', { required: true })}
+            {...register('tags', { required: false })}
             name='tags'
             type='text'
             className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'

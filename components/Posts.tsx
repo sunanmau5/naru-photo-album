@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import Link from 'next/link'
-import { AwesomePost } from './AwesomePost'
+import { DetailedPost } from './Post/DetailedPost'
 
 const AllPostsQuery = gql`
   query allPostsQuery($first: Int, $after: String) {
@@ -41,8 +41,9 @@ export const Posts = () => {
           //
           <Link href={`/post/${node.id}`} key={node.id}>
             <a>
-              <AwesomePost
+              <DetailedPost
                 className='max-w-md'
+                editable={false}
                 post={{
                   id: node.id,
                   description: node.description,

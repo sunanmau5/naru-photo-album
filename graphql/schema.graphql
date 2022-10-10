@@ -4,6 +4,7 @@
 
 type Mutation {
   createPost(description: String!, id: String!, imageUrl: String!, tags: [String]): Post!
+  updatePost(description: String, id: String!, tags: [String]): Post!
 }
 
 """

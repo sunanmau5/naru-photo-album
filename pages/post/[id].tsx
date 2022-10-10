@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { ArrowLeft, Download } from 'react-feather'
-import { AwesomePost } from '../../components/AwesomePost'
+import { DetailedPost } from '../../components/Post/DetailedPost'
 import prisma from '../../lib/prisma'
 
 // TODO Add comments
@@ -50,7 +50,7 @@ const Post = (props) => {
         </div>
       </div>
 
-      <AwesomePost post={{ ...post, imageUrl: signedUrl }} />
+      <DetailedPost editable post={{ ...post, imageUrl: signedUrl }} />
     </div>
   )
 }
