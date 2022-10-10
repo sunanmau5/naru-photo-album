@@ -28,7 +28,8 @@ export const PostsQuery = extendType({
           ctx.prisma.post.count(),
           ctx.prisma.post.findMany({
             take: first,
-            skip: offset
+            skip: offset,
+            orderBy: { createdAt: 'asc' }
           })
         ])
 
