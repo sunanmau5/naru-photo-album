@@ -47,7 +47,7 @@ export const DetailedPost = (props: DetailedPostProps) => {
   const { editing, headerActions } = useDetailedPostEdit(editable)
 
   return (
-    <div key={id} className={cx('shadow rounded', className)}>
+    <div key={id} className={cx('shadow rounded overflow-hidden', className)}>
       <img className='m-auto' src={imageUrl} />
       <div className='relative'>
         {headerActions}
