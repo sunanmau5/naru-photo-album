@@ -6,7 +6,7 @@ function Home() {
   return (
     <div>
       <Head>
-        <title>Awesome Posts</title>
+        <title>Naru Photo Album</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
