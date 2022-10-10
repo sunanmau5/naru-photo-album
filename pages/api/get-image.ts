@@ -33,9 +33,10 @@ export default async function handler(
       const results = await s3.listObjects({
         Bucket: process.env.AWS_S3_BUCKET_NAME
       })
+      // TODO list bucket objects
       console.log({ results })
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }

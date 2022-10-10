@@ -3,25 +3,25 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft, Download } from 'react-feather'
 import { AwesomePost } from '../../components/AwesomePost'
 import prisma from '../../lib/prisma'
-import { signKeyService } from '../../services/post-service'
+import { signKeyService } from '../../services/sign-key-service'
 
 // TODO Add comments
 // TODO Share functionality
 
 const Post = (props) => {
   const { post } = props
-  const { id } = post
+  const { imageUrl } = post
 
   const [signedUrl, setSignedUrl] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchImage = async () => {
-      const _signedUrl = await signKeyService.get(id)
+      const _signedUrl = await signKeyService.get(imageUrl)
       setSignedUrl(_signedUrl)
     }
 
     fetchImage().catch(console.error)
-  }, [id])
+  }, [imageUrl])
 
   return (
     <div className='flex flex-col gap-4'>

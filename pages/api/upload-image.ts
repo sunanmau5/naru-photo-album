@@ -27,7 +27,8 @@ export default async function handler(
     const post = await s3.createPresignedPost({
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Fields: {
-        key: imageKey
+        key: imageKey,
+        id: uuid
       },
       Expires: 60, // seconds
       Conditions: [
@@ -37,6 +38,6 @@ export default async function handler(
 
     return res.status(200).json(post)
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }

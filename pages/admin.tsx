@@ -1,6 +1,5 @@
 import { gql, useMutation } from '@apollo/client'
 import { getSession } from '@auth0/nextjs-auth0'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast, { Toaster } from 'react-hot-toast'
@@ -31,7 +30,7 @@ const Admin = () => {
   const [createPost, { loading, error }] = useMutation(CreatePostMutation)
   const { register, handleSubmit } = useForm()
   const [assignedId, setAssignedId] = useState<string | null>(null)
-  const { push } = useRouter()
+  const [imageKey, setImageKey] = useState<string | null>(null)
 
   const uploadImage = async (e) => {
     const file = e.target.files[0]
@@ -53,8 +52,8 @@ const Admin = () => {
       {
         loading: 'Uploading...',
         success: () => {
-          setAssignedId(fields.key)
-          console.log('ID assigned')
+          setAssignedId(fields.id)
+          setImageKey(fields.key)
           return 'Image successfully uploaded!🎉'
         },
         error: `Upload failed 😥 Please try again ${error}`
@@ -65,13 +64,17 @@ const Admin = () => {
   const onSubmit = async (data) => {
     const { description, tags } = data
 
-    const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${assignedId}`
     const tagsArr = tags
       .split(',')
       .map((tag) => tag.trim())
       .filter((tag) => tag !== '')
 
-    const variables = { id: assignedId, description, imageUrl, tags: tagsArr }
+    const variables = {
+      id: assignedId,
+      description,
+      imageUrl: imageKey,
+      tags: tagsArr
+    }
 
     try {
       toast.promise(createPost({ variables }), {
