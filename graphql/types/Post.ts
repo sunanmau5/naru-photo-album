@@ -1,5 +1,6 @@
 import { connectionFromArraySlice, cursorToOffset } from 'graphql-relay'
 import { extendType, list, nonNull, objectType, stringArg } from 'nexus'
+import { getS3SignedUrlById } from '../../services/s3-helper'
 
 export const Post = objectType({
   name: 'Post',
@@ -31,8 +32,17 @@ export const PostsQuery = extendType({
           })
         ])
 
+        const images = items.map((post) => {
+          const { imageUrl, ...rest } = post
+          const signedUrl = getS3SignedUrlById(imageUrl)
+          return {
+            ...rest,
+            imageUrl: signedUrl
+          }
+        })
+
         return connectionFromArraySlice(
-          items,
+          images,
           { first, after },
           { sliceStart: offset, arrayLength: totalCount }
         )

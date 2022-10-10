@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { ArrowLeft, Download } from 'react-feather'
 import { AwesomePost } from '../../components/AwesomePost'
 import prisma from '../../lib/prisma'
-import { signKeyService } from '../../services/sign-key-service'
 
 // TODO Add comments
 // TODO Share functionality
@@ -16,8 +15,9 @@ const Post = (props) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const _signedUrl = await signKeyService.get(imageUrl)
-      setSignedUrl(_signedUrl)
+      const res = await fetch(`/api/get-image?imageKey=${imageUrl}`)
+      const json = await res.json()
+      setSignedUrl(json)
     }
 
     fetchImage().catch(console.error)
